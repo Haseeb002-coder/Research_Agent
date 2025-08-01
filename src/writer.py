@@ -34,6 +34,7 @@ def writer(state: WriterState):
       "messages": [{"role": "user", "content": str(section)}]
   })
     
+    print("planner is done")
 
     return {
         "completed_sections": [content["messages"][-1].content]

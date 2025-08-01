@@ -11,7 +11,7 @@ def planner(state:AgentState):
     ]
 
     model2 = model.with_structured_output(Sections)
-
+    print("planner is done")
     res = model2.invoke(prompt)
     return {
         "report_plan": res.sections

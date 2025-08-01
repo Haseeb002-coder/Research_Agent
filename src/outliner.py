@@ -12,6 +12,7 @@ def outliner(state:AgentState):
     ]
 
     model2 = model.with_structured_output(Outline)
+    print("planner is done")
 
     outline = model2.invoke(prompt)
 

@@ -1,18 +1,14 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Request
 from pydantic import BaseModel
 from src.graph import graph_bilder
 
 app = FastAPI()
 
-# Request model
-class QuestionInput(BaseModel):
-    question: str
+# Input model
+class Question(BaseModel):
+    user: str
 
-# Route
-@app.post("/generate-graph")
-def generate_graph(data: QuestionInput):
-    try:
-        graph = graph_bilder(data.question)
-        return {"graph": graph}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+@app.post("/get-graph")
+def get_graph(data: Question):
+    graph = graph_bilder(data.user)
+    return {"graph": graph}
