@@ -1,0 +1,144 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Graph Generator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #ffffff);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background-color: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px 20px;
+      margin: 10px 0;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: 0.3s ease-in-out;
+    }
+
+    .generate-btn {
+      background-color: #2980b9;
+      color: white;
+    }
+
+    .generate-btn:hover {
+      background-color: #3498db;
+    }
+
+    #pdfBtn {
+      background-color: #27ae60;
+      color: white;
+      display: none;
+    }
+
+    #pdfBtn:hover {
+      background-color: #2ecc71;
+    }
+
+    #output {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #2c3e50;
+      text-align: left;
+      white-space: pre-wrap;
+      background: #f4f6f7;
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧠 Research Agent</h1>
+    <input type="text" id="question" placeholder="Enter your question..." />
+    <button class="generate-btn" onclick="sendQuestion()">Generate</button>
+
+    <div id="output"></div>
+    <button id="pdfBtn" onclick="downloadPDF()">📄 Download PDF</button>
+  </div>
+
+  <script>
+    let lastResponseText = "";
+
+    async function sendQuestion() {
+      const question = document.getElementById("question").value;
+      const output = document.getElementById("output");
+      const pdfBtn = document.getElementById("pdfBtn");
+
+      output.innerText = "⏳ Generating Report...";
+      pdfBtn.style.display = "none";
+
+      try {
+        const res = await fetch("/generate-graph", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          const formatted = JSON.stringify(data.graph, null, 2);
+          lastResponseText = formatted;
+          output.innerText = "✅ Graph:\n" + formatted;
+          pdfBtn.style.display = "inline-block";
+        } else {
+          output.innerText = "❌ Error: " + (data.detail || "Unknown error");
+        }
+      } catch (err) {
+        output.innerText = "❌ Server error, try again.";
+        console.error(err);
+      }
+    }
+
+    function downloadPDF() {
+      const text = lastResponseText;
+      if (!text) return;
+
+      const blob = new Blob([text], { type: "application/pdf" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "graph_output.pdf";
+      link.click();
+    }
+  </script>
+</body>
+</html> 
+
+

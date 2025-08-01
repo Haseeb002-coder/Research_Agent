@@ -1,0 +1,13 @@
+langchain>=0.1.17
+langchain-community>=0.3.27
+langchain-tavily
+langgraph
+google-generativeai
+ipython
+python-dotenv
+markdown2
+pdfkit
+typing-extensions
+fastapi
+uvicorn
+pydantic
